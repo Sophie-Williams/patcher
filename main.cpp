@@ -3,14 +3,16 @@
 #include <iostream>
 
 #include "downloader.h"
+#include "patch_list.h"
 
 
 int main(int argc, char* argv[]) {
-    try {
-	  	  Downloader downloader("www.leaiva.com", "80");
-	  	  downloader.get("/client/test/asdads.txt", "3E71771B");
+    std::cout << std::endl;
 
-        downloader.run();
+    try {
+        PatchList patch_list;
+        patch_list.generate_patch_files();
+
     }
     catch(std::exception& e) {
         std::cerr << e.what() << std::endl;
@@ -18,6 +20,7 @@ int main(int argc, char* argv[]) {
 
     FileManager::rmdirs("tmp");
 	
+    std::cout << std::endl;
   	return 0;
 }
 

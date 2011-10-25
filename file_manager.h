@@ -1,3 +1,5 @@
+#ifndef __FILE_MANAGER__
+#define __FILE_MANAGER__
 
 #include <boost/filesystem.hpp>
 #include <boost/crc.hpp>
@@ -19,3 +21,5 @@ public:
   	static void write(std::string& content, std::string file_path);
   	static std::string checksum(std::string file_path);
 };
+
+#endif

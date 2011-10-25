@@ -11,5 +11,9 @@ public:
         checksum = _checksum; 
     }
 
+    std::string string() {
+        return uri + " " + checksum;
+    }
+
     std::string uri, checksum;
 };
