@@ -2,33 +2,42 @@
 #include "downloader.h"
 
 
-Downloader::Downloader(std::string _host)
+Downloader::Downloader(std::string _host, std::string _port)
 {
 		host = _host;
+		port = _port;
 }
 
 void Downloader::run()
-{
-		for(size_t i = 0; i < files_to_download.size(); ++i) {
-				_download(files_to_download.front());
-				files_to_download.pop_front();
+{	
+		while(!files_to_download.empty()) {
+				for(size_t i = 0; i < files_to_download.size(); ++i) {
+						_download(files_to_download.front());
+						files_to_download.pop_front();
+				}
 		}
 }
 
-void Downloader::get(std::string uri, std::string expected_checksum) 
+void Downloader::get(std::string uri, std::string expected_checksum, int tries) 
 {
-		files_to_download.push_back(FileToDownload(uri, expected_checksum));
+		files_to_download.push_back(FileToDownload(uri, expected_checksum, tries));
 }
 
 void Downloader::_download(FileToDownload file)
 {
+		if(file.tries >= MAX_TRIES) {
+				std::cout << "Error - Could not download " << file.uri << "\n";
+				return;	
+		}
+
+		std::cout << "Downloading " << file.uri << "\n";
 		int last_slash = file.uri.find_last_of('/');
 		std::string local_dir = file.uri.substr(0, last_slash);
 		std::string filename = file.uri.substr(last_slash + 1);
 
 		// Find host using boost
 		tcp::resolver resolver(io_service);
-    tcp::resolver::query query(tcp::v4(), host, "80");
+    tcp::resolver::query query(tcp::v4(), host, port);
     tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
 		tcp::resolver::iterator end;
 
@@ -74,11 +83,15 @@ void Downloader::_download(FileToDownload file)
 		std::string tmp_path = "tmp" + file.uri;
 		FileManager::write(response, tmp_path);
 
-		std::cout << tmp_path << "  " << FileManager::checksum(tmp_path) << "\n";
+		std::string actual_checmsum = FileManager::checksum(tmp_path);
 
 		// If we can check for file integrity, do so here and short circuit if necessary
 		if(!file.expected_checksum.empty()) {
-				
+				if(file.expected_checksum != actual_checmsum) {
+						// If the checksum does not match, requeue
+						get(file.uri, file.expected_checksum, file.tries + 1);
+						return;
+				}
 		}
 
 		// Move the downloaded file to its correct location

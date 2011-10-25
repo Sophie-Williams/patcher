@@ -7,8 +7,8 @@
 
 int main(int argc, char* argv[]) {
     try {
-	  	  Downloader downloader("www.leaiva.com");
-	  	  downloader.get("/client/test/asdads.txt");
+	  	  Downloader downloader("www.leaiva.com", "80");
+	  	  downloader.get("/client/test/asdads.txt", "3E71771B");
 
         downloader.run();
     }
