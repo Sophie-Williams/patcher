@@ -26,11 +26,11 @@ void Downloader::get(std::string uri, std::string expected_checksum, int tries)
 void Downloader::_download(FileToDownload file)
 {
 		if(file.tries >= MAX_TRIES) {
-				std::cout << "Error - Could not download " << file.uri << "\n";
+				std::cout << "Error - Could not download " << file.uri << std::endl;
 				return;	
 		}
 
-		std::cout << "Downloading " << file.uri << "\n";
+		std::cout << "Downloading " << file.uri << std::endl;
 		int last_slash = file.uri.find_last_of('/');
 		std::string local_dir = file.uri.substr(0, last_slash);
 		std::string filename = file.uri.substr(last_slash + 1);
