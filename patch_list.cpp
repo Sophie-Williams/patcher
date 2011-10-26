@@ -8,8 +8,6 @@ void PatchList::generate_patch_files()
     directories.clear();
     directories.push_back(".");
     current_directory = complete(path(".")).string() + "/";
-    std::cout << "Current directory is: \n  " << current_directory << std::endl;
-
 
     while(!directories.empty()) {
         parse_directory(directories.front());
@@ -36,8 +34,11 @@ void PatchList::parse_directory(std::string dir)
     }
 }
 
-void PatchList::write_patch_file(std::string filename)
-{
+void PatchList::write_patch_file(std::string dir, std::string filename)
+{   
+    FileManager::mkdirs(dir);
+    filename = dir + "/" + filename;
+    
     std::ofstream patch(filename.c_str());
     if(patch) {
         size_t sz = files.size();

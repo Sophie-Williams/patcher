@@ -95,7 +95,7 @@ void Downloader::_download(FileToDownload file)
 		}
 
 		// Move the downloaded file to its correct location
-		local_dir = "./data" + local_dir;
+		local_dir = "./data" + local_dir + "/";
 		FileManager::mkdirs(local_dir);
 		FileManager::mv(tmp_path, local_dir + filename);
 }

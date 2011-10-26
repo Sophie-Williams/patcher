@@ -17,7 +17,7 @@ public:
 
 protected:
     void parse_directory(std::string dir);
-    void write_patch_file(std::string filename = "patch.txt");
+    void write_patch_file(std::string dir = "patch", std::string filename = "patch.txt");
 
 public:
     std::string current_directory;

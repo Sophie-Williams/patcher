@@ -2,6 +2,7 @@
 #include <string>
 
 #include "downloader.h"
+#include "file_manager.h"
 
 
 class PatchManager
