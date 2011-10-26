@@ -1,3 +1,5 @@
+#ifndef __DOWNLOADER__
+#define __DOWNLOADER__
 
 #include <string>
 #include <iostream>
@@ -16,7 +18,7 @@ using boost::asio::ip::tcp;
 class Downloader 
 {
 public:
-    Downloader(std::string _host, std::string _port);
+    void init(std::string _host, std::string _port);
     void get(std::string uri, std::string expected_checksum = "", int tries = 0);
     void run();
 
@@ -30,3 +32,5 @@ public:
 
     std::deque<FileToDownload> files_to_download;
 };
+
+#endif

@@ -2,7 +2,7 @@
 #include "downloader.h"
 
 
-Downloader::Downloader(std::string _host, std::string _port)
+void Downloader::init(std::string _host, std::string _port)
 {
 		host = _host;
 		port = _port;
