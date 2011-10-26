@@ -6,4 +6,4 @@ patcher:
 	$(CC) file_manager.cpp patch_list.cpp downloader.cpp main.cpp $(LIBS) -o patcher
 
 clean:
-	rm -rf *o patcher
+	rm -rf *o patcher patch.txt
