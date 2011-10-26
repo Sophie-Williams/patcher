@@ -65,20 +65,17 @@ void Downloader::_download(FileToDownload file)
 		boost::system::error_code ignored_error;
 		boost::asio::write(socket, boost::asio::buffer(request.str()), boost::asio::transfer_all(), ignored_error);
 
-		// Read headers
-		boost::asio::streambuf response_buf;
-		std::stringstream response_stream;
-    boost::asio::read_until(socket, response_buf, "\r\n\r\n");
-
     // Read content
     std::string response = "";
+    boost::asio::streambuf response_buf;
+		std::stringstream response_stream;
     while(boost::asio::read(socket, response_buf, boost::asio::transfer_at_least(1), error)) {
       	response_stream << &response_buf;
     }
 
 		// Parse out the headers
 		response = response_stream.str();
-		response = response_stream.str().substr(response.find("\r\n\r\n") + 4);
+		response = response.substr(response.find("\r\n\r\n") + 4);
 
 		// Make the temporary directories and then save the file
 		FileManager::mkdirs("tmp" + local_dir);
