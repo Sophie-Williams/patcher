@@ -4,6 +4,7 @@
 
 #include <deque>
 #include <string>
+#include <fstream>
 
 #include "patch_file.h"
 #include "file_manager.h"
@@ -16,6 +17,7 @@ public:
 
 protected:
     void parse_directory(std::string dir);
+    void write_patch_file(std::string filename = "patch.txt");
 
 public:
     std::string current_directory;

@@ -15,6 +15,8 @@ void PatchList::generate_patch_files()
         parse_directory(directories.front());
         directories.pop_front();
     }
+
+    write_patch_file();
 }
 
 void PatchList::parse_directory(std::string dir)
@@ -30,8 +32,19 @@ void PatchList::parse_directory(std::string dir)
         else if(is_regular_file(*iter)) {
             std::string rel_path = path.substr(current_directory.size());
             files.push_back(PatchFile(rel_path, FileManager::checksum(path)));
-
-            std::cout << "    " << files.back().string() << std::endl;
         }
+    }
+}
+
+void PatchList::write_patch_file(std::string filename)
+{
+    std::ofstream patch(filename.c_str());
+    if(patch) {
+        size_t sz = files.size();
+        for(size_t i = 0; i < sz; ++i) {
+            patch << files[i].string() << std::endl;
+        }
+
+        patch.close();
     }
 }
