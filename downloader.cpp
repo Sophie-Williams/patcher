@@ -2,10 +2,11 @@
 #include "downloader.h"
 
 
-void Downloader::init(std::string _host, std::string _port)
+void Downloader::init(std::string _host, std::string _port, std::string _starting_uri_dir)
 {
 		host = _host;
 		port = _port;
+		starting_uri_dir = _starting_uri_dir;
 }
 
 void Downloader::run()
@@ -56,7 +57,7 @@ void Downloader::_download(FileToDownload file)
 
 		// Build request
 	  std::stringstream request;
-	  request << "GET " + file.uri + " HTTP/1.0 \r\n";
+	  request << "GET " + starting_uri_dir + file.uri + " HTTP/1.0 \r\n";
 	  request << "Host: " << host << "\r\n";
 	  request << "\r\n";
 
