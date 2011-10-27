@@ -7,6 +7,10 @@ void PatchManager::get_patch()
     downloader.init("www.leaiva.com", "80", "/patch");
     download_patch_file();
     download_patch_contents();
+
+    std::cout << std::endl;
+    std::cout << "Patch list found" << std::endl;
+    //downloader.run();
 }
 
 void PatchManager::download_patch_file()
@@ -28,6 +32,10 @@ void PatchManager::download_patch_contents()
     if(patch) {
         while(patch.good()) {
             getline(patch, line);
+
+            if(line.empty()) {
+                continue;
+            }
             
             index = line.find(" ");
             if(index != std::string::npos) {
@@ -42,9 +50,10 @@ void PatchManager::download_patch_contents()
                 }
             }
             else {
-                std::cout << "Invalid line in patch file: " << line_num << std::endl;
+                std::cout << std::endl << "Invalid line in patch file: " << line_num << std::endl;
             }
 
+            std::cout << ".";
             ++line_num;
         }
         

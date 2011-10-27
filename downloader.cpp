@@ -31,7 +31,7 @@ void Downloader::download(FileToDownload file)
 				return;	
 		}
 
-		std::cout << "  " << file.uri << std::endl;
+		std::cout << "Get " << file.uri << std::endl;
 		int last_slash = file.uri.find_last_of('/');
 		std::string local_dir = file.uri.substr(0, last_slash);
 		std::string filename = file.uri.substr(last_slash + 1);
