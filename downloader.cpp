@@ -21,6 +21,15 @@ void Downloader::run()
 
 void Downloader::get(std::string uri, std::string expected_checksum, int tries) 
 {
+		if(uri.empty()) {
+				return;
+		}
+
+		// Make sure uris always start with a /
+		if(uri[0] != '/') {
+				uri = "/" + uri;
+		}
+
 		files_to_download.push_back(FileToDownload(uri, expected_checksum, tries));
 }
 

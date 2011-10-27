@@ -10,7 +10,7 @@ void PatchManager::get_patch()
 
     std::cout << std::endl;
     std::cout << "Patch list found" << std::endl;
-    //downloader.run();
+    downloader.run();
 }
 
 void PatchManager::download_patch_file()
