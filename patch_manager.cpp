@@ -22,6 +22,8 @@ void PatchManager::download_patch_contents()
     std::ifstream patch("patch/patch.txt");
     int index;
     int line_num = 0;
+    std::string checksum;
+    std::string filename;
 
     if(patch) {
         while(patch.good()) {
@@ -29,12 +31,18 @@ void PatchManager::download_patch_contents()
             
             index = line.find(" ");
             if(index != std::string::npos) {
-                downloader.get(line.substr(0, index), line.substr(index + 1));
+                filename = line.substr(0, index);
+                checksum = line.substr(index + 1);
+
+                // If the local file's checksum doesn't match the 
+                // checksum on the patch file, we know that the file is 
+                // out of date, so download it.
+                if(checksum != FileManager::checksum(filename)) {
+                    downloader.get(filename, checksum);
+                }
             }
             else {
-                std::cout << "Invalid patch file line: " << line_num << std::endl;
-                patch.close();
-                return;
+                std::cout << "Invalid line in patch file: " << line_num << std::endl;
             }
 
             ++line_num;
