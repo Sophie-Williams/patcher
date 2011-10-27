@@ -39,8 +39,8 @@ void Downloader::download(FileToDownload file)
 				std::cout << "Error - Could not download " << file.uri << std::endl;
 				return;	
 		}
+		std::cout << "Trying " << file.uri;
 
-		std::cout << "Get " << file.uri << std::endl;
 		int last_slash = file.uri.find_last_of('/');
 		std::string local_dir = file.uri.substr(0, last_slash);
 		std::string filename = file.uri.substr(last_slash + 1);
@@ -86,9 +86,12 @@ void Downloader::download(FileToDownload file)
 
 		// If the checksum does not match, requeue
 		if(!check_file_integrity(file, tmp_path)) {
+				std::cout << " - Failed" << std::endl;
 				get(file.uri, file.expected_checksum, file.tries + 1);
 				return;
 		}
+
+		std::cout << " - Success" << std::endl;
 
 		// Move the downloaded file to its correct location
 		local_dir = "./data" + local_dir + "/";

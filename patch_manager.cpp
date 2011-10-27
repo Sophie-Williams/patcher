@@ -9,7 +9,7 @@ void PatchManager::get_patch()
     download_patch_contents();
 
     std::cout << std::endl;
-    std::cout << "Patch list found" << std::endl;
+    std::cout << "Patch list received" << std::endl;
     downloader.run();
 }
 
@@ -23,7 +23,7 @@ void PatchManager::download_patch_file()
 void PatchManager::download_patch_contents()
 { 
     std::string line = "";
-    std::ifstream patch("patch/patch.txt");
+    std::ifstream patch("data/patch.txt");
     int index;
     int line_num = 0;
     std::string checksum;
@@ -37,7 +37,7 @@ void PatchManager::download_patch_contents()
                 continue;
             }
             
-            index = line.find(" ");
+            index = line.find("\t");
             if(index != std::string::npos) {
                 filename = line.substr(0, index);
                 checksum = line.substr(index + 1);

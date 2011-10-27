@@ -12,7 +12,7 @@ public:
     }
 
     std::string string() {
-        return uri + " " + checksum;
+        return uri + "\t" + checksum;
     }
 
     std::string uri, checksum;
