@@ -13,7 +13,7 @@ void Downloader::run()
 {	
 		while(!files_to_download.empty()) {
 				for(size_t i = 0; i < files_to_download.size(); ++i) {
-						_download(files_to_download.front());
+						download(files_to_download.front());
 						files_to_download.pop_front();
 				}
 		}
@@ -24,7 +24,7 @@ void Downloader::get(std::string uri, std::string expected_checksum, int tries)
 		files_to_download.push_back(FileToDownload(uri, expected_checksum, tries));
 }
 
-void Downloader::_download(FileToDownload file)
+void Downloader::download(FileToDownload file)
 {
 		if(file.tries >= MAX_TRIES) {
 				std::cout << "Error - Could not download " << file.uri << std::endl;
@@ -55,15 +55,9 @@ void Downloader::_download(FileToDownload file)
 		    throw boost::system::system_error(error);
 		}
 
-		// Build request
-	  std::stringstream request;
-	  request << "GET " + starting_uri_dir + file.uri + " HTTP/1.0 \r\n";
-	  request << "Host: " << host << "\r\n";
-	  request << "\r\n";
-
 	 	// Make request
 		boost::system::error_code ignored_error;
-		boost::asio::write(socket, boost::asio::buffer(request.str()), boost::asio::transfer_all(), ignored_error);
+		boost::asio::write(socket, boost::asio::buffer(request_params(file)), boost::asio::transfer_all(), ignored_error);
 
     // Read content
     std::string response = "";
@@ -73,24 +67,18 @@ void Downloader::_download(FileToDownload file)
       	response_stream << &response_buf;
     }
 
-		// Parse out the headers
 		response = response_stream.str();
-		response = response.substr(response.find("\r\n\r\n") + 4);
+		remove_response_headers(response);
 
 		// Make the temporary directories and then save the file
 		FileManager::mkdirs("tmp" + local_dir);
 		std::string tmp_path = "tmp" + file.uri;
 		FileManager::write(response, tmp_path);
 
-		std::string actual_checmsum = FileManager::checksum(tmp_path);
-
-		// If we can check for file integrity, do so here and short circuit if necessary
-		if(!file.expected_checksum.empty()) {
-				if(file.expected_checksum != actual_checmsum) {
-						// If the checksum does not match, requeue
-						get(file.uri, file.expected_checksum, file.tries + 1);
-						return;
-				}
+		// If the checksum does not match, requeue
+		if(!check_file_integrity(file, tmp_path)) {
+				get(file.uri, file.expected_checksum, file.tries + 1);
+				return;
 		}
 
 		// Move the downloaded file to its correct location
@@ -98,3 +86,32 @@ void Downloader::_download(FileToDownload file)
 		FileManager::mkdirs(local_dir);
 		FileManager::mv(tmp_path, local_dir + filename);
 }
+
+void Downloader::remove_response_headers(std::string& response)
+{
+		response = response.substr(response.find("\r\n\r\n") + 4);
+}
+
+bool Downloader::check_file_integrity(FileToDownload& file, std::string local_file)
+{
+		std::string actual_checksum = FileManager::checksum(local_file);
+
+		// If we can check for file integrity, do so here and short circuit if necessary
+		if(!file.expected_checksum.empty()) {
+				if(file.expected_checksum != actual_checksum) {
+						return false;
+				}
+		}
+
+		return true;
+}
+
+std::string Downloader::request_params(FileToDownload& file)
+{
+		std::stringstream request;
+	  request << "GET " + starting_uri_dir + file.uri + " HTTP/1.0 \r\n";
+	  request << "Host: " << host << "\r\n";
+	  request << "\r\n";
+	  return request.str();
+}
+

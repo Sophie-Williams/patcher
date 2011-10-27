@@ -23,7 +23,10 @@ public:
     void run();
 
 protected:
-    void _download(FileToDownload file);
+    void remove_response_headers(std::string& response);
+    bool check_file_integrity(FileToDownload& file, std::string local_file);
+    std::string request_params(FileToDownload& file);
+    void download(FileToDownload file);
     
 public:
     std::string host, port, starting_uri_dir;
