@@ -4,13 +4,15 @@
 
 void PatchManager::get_patch() 
 {
+    ignore_regex = boost::regex("[\\d\\w]+\\.(cpp|h|obj)|makefile", boost::regex_constants::icase);
+
     downloader.init("www.leaiva.com", "80", "/patch");
     download_patch_file();
     download_patch_contents();
 
     std::cout << std::endl;
     std::cout << "Patch list received" << std::endl;
-    downloader.run();
+    //downloader.run();
 }
 
 void PatchManager::download_patch_file()
@@ -23,7 +25,7 @@ void PatchManager::download_patch_file()
 void PatchManager::download_patch_contents()
 { 
     std::string line = "";
-    std::ifstream patch("data/patch.txt");
+    std::ifstream patch("patch/patch.txt");
     int index;
     int line_num = 0;
     std::string checksum;
@@ -42,11 +44,18 @@ void PatchManager::download_patch_contents()
                 filename = line.substr(0, index);
                 checksum = line.substr(index + 1);
 
-                // If the local file's checksum doesn't match the 
-                // checksum on the patch file, we know that the file is 
-                // out of date, so download it.
-                if(checksum != FileManager::checksum(filename)) {
-                    downloader.get(filename, checksum);
+                // Do not try to download if the file is meant to be ignored
+                if(!boost::regex_match(filename, ignore_regex)) {
+
+                    // If the local file's checksum doesn't match the 
+                    // checksum on the patch file, we know that the file is 
+                    // out of date, so download it.
+                    if(checksum != FileManager::checksum(filename)) {
+                        downloader.get(filename, checksum);
+                    }
+                }
+                else {
+                    std::cout << filename << " ignored" << std::endl;
                 }
             }
             else {

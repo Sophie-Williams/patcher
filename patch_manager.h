@@ -3,6 +3,7 @@
 
 #include "downloader.h"
 #include "file_manager.h"
+#include <boost/regex.hpp> 
 
 
 class PatchManager
@@ -16,4 +17,5 @@ protected:
 
 protected:
     Downloader downloader;
+    boost::regex ignore_regex;
 };
