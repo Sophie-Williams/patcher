@@ -4,6 +4,7 @@
 
 void PatchList::generate_patch_files()
 {
+    ignore_regex = boost::regex("[\\d\\w]+\\.(cpp|h|obj)|makefile", boost::regex_constants::icase);
     files.clear();
     directories.clear();
     directories.push_back(".");
@@ -29,7 +30,11 @@ void PatchList::parse_directory(std::string dir)
         }
         else if(is_regular_file(*iter)) {
             std::string rel_path = path.substr(current_directory.size());
-            files.push_back(PatchFile(rel_path, FileManager::checksum(path)));
+
+            // Do not add an ignored file to the patch list
+            if(!boost::regex_match(rel_path, ignore_regex)) {
+                files.push_back(PatchFile(rel_path, FileManager::checksum(path)));
+            }
         }
     }
 }
