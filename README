@@ -1,0 +1,3 @@
+On Mac OsX Lion I used:
+make clean; make patcher; ./patcher
+

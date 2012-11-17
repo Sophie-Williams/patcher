@@ -2,11 +2,13 @@
 #include "patch_manager.h"
 
 
-void PatchManager::get_patch() 
+void PatchManager::get_patch(
+    std::string domain, std::string port, std::string starting_uri_dir, std::string ignore_str
+) 
 {
-    ignore_regex = boost::regex("[\\d\\w]+\\.(cpp|h|obj)|makefile", boost::regex_constants::icase);
+    ignore_regex = boost::regex(ignore_str, boost::regex_constants::icase);
 
-    downloader.init("www.leaiva.com", "80", "/patch");
+    downloader.init(domain, port, starting_uri_dir);
     download_patch_file();
     download_patch_contents();
 

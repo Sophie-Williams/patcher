@@ -14,7 +14,7 @@
 class PatchList
 {
 public:
-    void generate_patch_files();
+    void generate_patch_files(std::string ignore_regex_str = "[\\d\\w]+\\.(cpp|h|obj)|makefile");
 
 protected:
     void parse_directory(std::string dir);

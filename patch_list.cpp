@@ -2,9 +2,9 @@
 #include "patch_list.h"
 
 
-void PatchList::generate_patch_files()
-{
-    ignore_regex = boost::regex("[\\d\\w]+\\.(cpp|h|obj)|makefile", boost::regex_constants::icase);
+void PatchList::generate_patch_files(std::string ignore_regex_str)
+{   
+    ignore_regex = boost::regex(ignore_regex_str, boost::regex_constants::icase);
     files.clear();
     directories.clear();
     directories.push_back(".");
